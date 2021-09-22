@@ -1,0 +1,19 @@
+#!/bin/bash
+#
+# lscount
+#
+# List files and folders, followed by a count
+
+# Stop on errors, print commands
+# See https://vaneyckt.io/posts/safer_bash_scripts_with_set_euxo_pipefail/
+set -Eeuo pipefail
+set -x
+
+file=var/insta485.sqlite3
+if [ ! -f "$file" ];then
+./bin/insta485db create
+fi
+
+export FLASK_ENV=development
+export FLASK_APP=insta485
+flask run --host 0.0.0.0 --port 8000
