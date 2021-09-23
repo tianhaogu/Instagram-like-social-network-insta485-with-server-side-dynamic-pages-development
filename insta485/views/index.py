@@ -5,23 +5,83 @@ URLs include:
 /
 """
 import flask
+import arrow
 import insta485
+import functools
+from flask import (flash, redirect, render_template,
+                   request, session, url_for)
 
 
 @insta485.app.route('/')
 def show_index():
     """Display / route."""
 
+    # need to add seesion
+    # ======begin=========
+    # ====================
+    #logname = "awdeorio"
+    logname = session.get('logname')
+    if logname is None:
+        return redirect(url_for('show_login'))
+    # ======end=========
+
     # Connect to database
     connection = insta485.model.get_db()
 
     # Query database
     cur = connection.execute(
-        "SELECT username, fullname "
-        "FROM users"
+        "SELECT postid, filename, owner, created "
+        "FROM posts "
     )
     users = cur.fetchall()
+    for item in users:
+        insta485.app.logger.debug(item['created'])
+
+    for user in users:
+        time = arrow.get(user['created'], 'YYYY-MM-DD HH:mm:ss')
+        user['timestamp'] = time.humanize()
+        # Query likes
+        cur = connection.execute(
+            "SELECT COUNT(owner) "
+            "AS output "
+            "FROM likes "
+            "WHERE postid=?",
+            [user['postid']]
+        )
+        user['likes'] = cur.fetchone()['output']
+
+        # Query owner_img_url
+        cur = connection.execute(
+            "SELECT filename "
+            "FROM users "
+            "WHERE username=?",
+            [user['owner']]
+        )
+        user['owner_img_url'] = '/uploads/' + cur.fetchone()['filename']
+        # Query comments
+        cur = connection.execute(
+            "SELECT owner, text "
+            "FROM comments "
+            "WHERE postid=?",
+            [user['postid']]
+        )
+        user['comments'] = cur.fetchall()
+        # Change the name of file
+        user['img_url'] = '/uploads/' + user['filename']
+
+        # Search is_logname_like
+        cur = connection.execute(
+            "SELECT owner "
+            "FROM likes "
+            "WHERE owner=? AND postid=?",
+            [logname, user['postid']]
+        )
+        if cur.fetchone():
+            user['is_logname_like'] = True
+        else:
+            user['is_logname_like'] = False
+        insta485.app.logger.debug(cur.fetchone())
 
     # Add database info to context
-    context = {"users": users}
+    context = {"logname": logname, 'posts': users}
     return flask.render_template("index.html", **context)

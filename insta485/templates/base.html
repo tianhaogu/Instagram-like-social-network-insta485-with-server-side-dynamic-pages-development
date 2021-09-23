@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+
+
+<html lang="en">
+<head>
+  <title>insta485</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+
+<body>
+
+  <div class="title">
+    <a href="/">
+      <div>
+        <div style="display: inline-block;vertical-align: middle;">
+          <img src="/static/images/insta.jpg" width="50" height="50" alt="insta">
+        </div>
+        <hr style="display: inline-block;vertical-align: middle; width:0.1px; height:30px;border-left: 10px;border-right: 10px; ">
+        <b style="display: inline-block;vertical-align: middle;font-family: cursive;font-size: 30px;">Insta485</b>
+      </div>
+    </a>
+    <div style="margin-top: 25px;">
+      <span>
+        <a href="/explore/">
+          <b >explore |</b>
+        </a>
+      </span>
+      <span>
+        <a href="{{ "/u/" ~ logname ~ "/" }}">
+          <b>{{logname}}</b>
+        </a>
+      </span>
+    </div>
+  </div>
+  <br>
+  <br>
+  <br>
+
+
+  {% block content %}{% endblock %}
+</body>
+</html>

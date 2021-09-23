@@ -1,0 +1,22 @@
+
+{% extends "head.html" %}
+{% block head %}
+<div style="margin-top: 25px;">
+  <span>
+    <a href="/accounts/login/">
+      <b >login</b>
+    </a>
+  </span>
+  </div>
+{% endblock %}
+
+
+{% block content %}
+<!-- DO NOT CHANGE THIS -->
+
+<form action="<FIXME_ACCOUNTS_URL_HERE>?target=<FIXME_ACCOUNTS_CREATE_HERE>" method="post" enctype="multipart/form-data">
+  {{logname}}
+  <input type="submit" name="delete" value="confirm delete account"/>
+  <input type="hidden" name="operation" value="delete"/>
+</form>
+{% endblock %}

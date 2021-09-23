@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+  <div style="margin-left:15%;margin-right:15%">
+    <h1>{{username}}</h1>
+    {% if username == logname %}
+      <p></p>
+    {% elif logname_follows_username %}
+      <p>following</p>
+    {% else %}
+      <p>not following</p>
+    {% endif %}
+    <p>
+      {% if total_posts <= 1 %}
+        {{total_posts}} post
+      {% else %}
+        {{total_posts}} posts
+      {% endif %}
+      <a href="{{ "/u/" ~ username ~ "/followers/" }}">
+        {% if followers <= 1 %}
+          <b>{{followers}} follower</b>
+        {% else %}
+          <b>{{followers}} followers</b>
+        {% endif %}
+      </a>
+      <a href="{{ "/u/" ~ username ~ "/following/" }}">
+        <b> {{following}} following</b>
+      </a>
+    </p>
+    <p>{{fullname}}</p>
+    <div class="row">
+      {% for item in posts %}
+        <div class="column">
+          <a href="{{ "/p/" ~ item.postid ~ "/" }}">
+            <img src="{{item.img_url}}" style="width:100%;height: 300px;" alt="photos">
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+  </div>  
+{% endblock %}
+
