@@ -81,7 +81,7 @@ def operate_following():
     curl = connection.execute(
         "SELECT * "
         "FROM following "
-        "WHERE username1=? and username2=?",
+        "WHERE username1 = ? and username2 = ?",
         (logname, username)
     )
     is_exist = curl.fetchall()
@@ -100,6 +100,12 @@ def operate_following():
         else:
             connection.execute(
                 "DELETE FROM following "
-                "WHERE username1=? AND username2=?",
+                "WHERE username1 = ? AND username2 = ?",
                 (logname, username)
             )
+
+    target_url = request.args.get("target")
+    if target_url:
+        return redirect(url_for(target_url))
+    else:
+        return redirect(url_for('show_index'))

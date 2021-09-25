@@ -55,9 +55,9 @@
           <span>{{comment.text}}</span>
           {% if comment.owner == logname %}
             <!-- DO NOT CHANGE THIS (aside from where we say 'FIXME') -->
-              <form action="<FIXME_COMMENTS_URL_HERE>?target=<FIXME_CURRENT_PAGE_URL_HERE>" method="post" enctype="multipart/form-data">
+              <form action="/comments/?target={{url_for('show_post', postid_url_slug=curr_post.postid)}}" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="operation" value="delete"/>
-                <input type="hidden" name="commentid" value="<FIXME_COMMENT_ID_HERE>"/>
+                <input type="hidden" name="commentid" value="{{comments.commentid}}"/>
                 <input type="submit" name="uncomment" value="delete"/>
               </form>
           {% endif %}
@@ -74,9 +74,9 @@
       </p>
       <p>
         <!-- DO NOT CHANGE THIS (aside from where we say 'FIXME') -->
-        <form action="<FIXME_POSTS_URL_HERE>?target=<FIXME_LOGGED_IN_USER_PAGE_URL_HERE>" method="post" enctype="multipart/form-data">
+        <form action="/posts/?target={{url_for('show_user', user_url_slug=logname)}}" method="post" enctype="multipart/form-data">
           <input type="hidden" name="operation" value="delete"/>
-          <input type="hidden" name="postid" value="<FIXME_POST_ID_HERE>"/>
+          <input type="hidden" name="postid" value="{{curr_post.postid}}"/>
           <input type="submit" name="delete" value="delete this post"/>
         </form>
       </p>
