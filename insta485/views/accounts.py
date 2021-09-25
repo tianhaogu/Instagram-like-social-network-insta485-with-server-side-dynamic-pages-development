@@ -4,13 +4,12 @@ Insta485 accounts view.
 URLs include:
 /
 """
-import flask
 import pathlib
 import uuid
 import hashlib
 import insta485
 from flask import (flash, redirect, render_template,
-                   request, session, url_for)
+                   request, session, url_for, abort)
 
 
 @insta485.app.route('/accounts/login/', methods=["GET"])
@@ -116,7 +115,7 @@ def operate_accounts():
         fullname = request.form.get("fullname")
         email = request.form.get("email")
         fileobj = request.files.get("file")
-        if (username is None or password is None or fullname is None\
+        if (username is None or password is None or fullname is None
                 or email is None or fileobj is None):
             flask.abort(400)
 
@@ -146,7 +145,7 @@ def operate_accounts():
 
         connection.execute(
             "INSERT INTO users(username, fullname, email, filename, password)"
-            " VALUES (?, ?, ?, ?, ?)", 
+            " VALUES (?, ?, ?, ?, ?)",
             (username, fullname, email, filename, password_db_string)
         )
 
@@ -181,7 +180,6 @@ def operate_accounts():
             return redirect(url_for(target_url))
         else:
             return redirect(url_for('show_index'))
-
 
     else:
         return redirect(url_for('show_account_login'))
