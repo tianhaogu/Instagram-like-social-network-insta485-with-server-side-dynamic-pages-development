@@ -5,7 +5,7 @@
   {% for follower in following %}
     <div class="userDiv">
       <div class="userHeader">
-        <a href="{{ "/u/" ~ follower.username ~ "/" }}">
+        <a href="{{ "/users/" ~ follower.username ~ "/" }}">
           <div>
             <div style="display: inline-block;vertical-align: middle;">
               <img src="{{follower.user_img_url}}" width="30" height="30" alt="userPhoto">
