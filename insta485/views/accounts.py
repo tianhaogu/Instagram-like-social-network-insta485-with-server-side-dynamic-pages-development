@@ -41,6 +41,7 @@ def operate_accounts():
         session['logname'] = logname
 
         return redirect(url_for('show_index'))
+
     else:
         return redirect(url_for('show_login'))
 
@@ -58,10 +59,11 @@ def show_login():
 def operate_logout():
     logname = session.get('logname')
     if logname:
-        session.pop('logname')
+        session.Clear()  # diff session.Abandon()
     return redirect(url_for('show_login'))
 
 
+# I make this function redirect to '/'
 @insta485.app.route("/accounts/delete/")
 def show_delete():
     logname = session.get('logname')

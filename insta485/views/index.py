@@ -28,12 +28,24 @@ def show_index():
     # Connect to database
     connection = insta485.model.get_db()
 
-    # Query database
+    # Query all the posts from database
     cur = connection.execute(
         "SELECT postid, filename, owner, created "
         "FROM posts "
     )
     users = cur.fetchall()
+    # Query all the following users and logname itself
+    cur = connection.execute(
+        "SELECT username2 "
+        "FROM following "
+        "Where username1=?",
+        [logname]
+    )
+    following_list = [item['username2'] for item in cur.fetchall()]
+    following_set = set(following_list)
+    following_set.add(logname)
+    users = [item for item in users if item['owner'] in following_set]
+
     for item in users:
         insta485.app.logger.debug(item['created'])
 

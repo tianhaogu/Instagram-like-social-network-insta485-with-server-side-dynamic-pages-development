@@ -3,11 +3,29 @@
   <div style="margin-left:15%;margin-right:15%">
     <h1>{{username}}</h1>
     {% if username == logname %}
-      <p></p>
+      <p>
+        <b>Edit profile</b>
+          <!-- DO NOT CHANGE THIS (aside from where we say 'FIXME') -->
+          <form action="<FIXME_LOGOUT_PAGE_URL_HERE>" method="post" enctype="multipart/form-data">
+            <input type="submit" name="logout" value="Logout"/>
+          </form>
+      </p>
     {% elif logname_follows_username %}
       <p>following</p>
+        <!-- DO NOT CHANGE THIS (aside from where we say 'FIXME') -->
+        <form action="<FIXME_FOLLOWING_URL_HERE>?target=<FIXME_CURRENT_PAGE_URL_HERE>" method="post" enctype="multipart/form-data">
+          <input type="submit" name="unfollow" value="unfollow"/>
+          <input type="hidden" name="username" value="<FIXME_USERNAME_HERE>"/>
+          <input type="hidden" name="operation" value="unfollow"/>
+        </form>
     {% else %}
       <p>not following</p>
+        <!-- DO NOT CHANGE THIS (aside from where we say 'FIXME') -->
+        <form action="<FIXME_FOLLOWING_URL_HERE>?target=<FIXME_CURRENT_PAGE_URL_HERE>" method="post" enctype="multipart/form-data">
+          <input type="submit" name="follow" value="follow"/>
+          <input type="hidden" name="username" value="<FIXME_USERNAME_HERE>"/>
+          <input type="hidden" name="operation" value="follow"/>
+        </form>
     {% endif %}
     <p>
       {% if total_posts <= 1 %}
@@ -15,27 +33,43 @@
       {% else %}
         {{total_posts}} posts
       {% endif %}
-      <a href="{{ "/u/" ~ username ~ "/followers/" }}">
+      <a href="{{ "/users/" ~ username ~ "/followers/" }}">
         {% if followers <= 1 %}
           <b>{{followers}} follower</b>
         {% else %}
           <b>{{followers}} followers</b>
         {% endif %}
       </a>
-      <a href="{{ "/u/" ~ username ~ "/following/" }}">
+      <a href="{{ "/users/" ~ username ~ "/following/" }}">
         <b> {{following}} following</b>
       </a>
     </p>
     <p>{{fullname}}</p>
+    <p>
+      <div class="box">
+        <p>
+        <!-- DO NOT CHANGE THIS (aside from where we say 'FIXME') -->
+        <form action="<FIXME_POSTS_URL_HERE>?target=<FIXME_CURRENT_PAGE_URL_HERE>" method="post" enctype="multipart/form-data">
+          <input type="file" name="file" accept="image/*" required/>
+          <input type="submit" name="create_post" value="upload new post"/>
+          <input type="hidden" name="operation" value="create"/>
+        </form>
+        </p>
+      </div>
+    </p>
+
     <div class="row">
       {% for item in posts %}
         <div class="column">
-          <a href="{{ "/p/" ~ item.postid ~ "/" }}">
+          <a href="{{ "/posts/" ~ item.postid ~ "/" }}">
             <img src="{{item.img_url}}" style="width:100%;height: 300px;" alt="photos">
           </a>
         </div>
       {% endfor %}
     </div>
+
+
+
   </div>  
 {% endblock %}
 
