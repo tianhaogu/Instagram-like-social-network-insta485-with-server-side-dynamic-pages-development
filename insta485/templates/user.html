@@ -17,7 +17,7 @@
         <!-- DO NOT CHANGE THIS (aside from where we say 'FIXME') -->
         <form action="/following/?target={{url_for('show_user', user_url_slug=username)}}" method="post" enctype="multipart/form-data">
           <input type="submit" name="unfollow" value="unfollow"/>
-          <input type="hidden" name="username" value="<FIXME_USERNAME_HERE>"/>
+          <input type="hidden" name="username" value="username"/>
           <input type="hidden" name="operation" value="unfollow"/>
         </form>
     {% else %}
@@ -25,7 +25,7 @@
         <!-- DO NOT CHANGE THIS (aside from where we say 'FIXME') -->
         <form action="/following/?target={{url_for('show_user', user_url_slug=username)}}" method="post" enctype="multipart/form-data">
           <input type="submit" name="follow" value="follow"/>
-          <input type="hidden" name="username" value="<FIXME_USERNAME_HERE>"/>
+          <input type="hidden" name="username" value="username"/>
           <input type="hidden" name="operation" value="follow"/>
         </form>
     {% endif %}

@@ -165,7 +165,7 @@ def operate_accounts():
             "SELECT username, filename FROM users "
             "WHERE username = ?", (logname,)
         )
-        curr_user = user_post_result.fetchone()
+        curr_user = user_result.fetchone()
         ufilename = insta485.app.config["UPLOAD_FOLDER"]/curr_user["filename"]
         with open(ufilename, 'r') as handle_ufile:
             os.remove(ufilename)
