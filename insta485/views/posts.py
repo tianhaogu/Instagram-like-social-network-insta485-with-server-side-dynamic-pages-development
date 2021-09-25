@@ -42,6 +42,18 @@ def show_post(postid_url_slug):
     )
     context['likes'] = len(like_result.fetchall())
 
+    # Search is_logname_like
+    cur = connection.execute(
+        "SELECT owner "
+        "FROM likes "
+        "WHERE owner=? AND postid=?",
+        [logname, postid_url_slug]
+    )
+    if cur.fetchone():
+        context['is_logname_like'] = True
+    else:
+        context['is_logname_like'] = False
+
     # Query comments
     comment_result = connection.execute(
         "SELECT P.postid, C.owner, C.text, C.created, C.commentid "

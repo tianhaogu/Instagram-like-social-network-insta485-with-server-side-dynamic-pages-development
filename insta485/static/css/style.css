@@ -21,6 +21,9 @@ body {
   margin-left: 5%;
   margin-right: 5%;
 }
+.inner {
+  display: inline-block;
+}
 
 .userWithoutDiv {
   margin-left: 20%;

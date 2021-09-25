@@ -45,9 +45,11 @@ def operate_accounts():
     else:
         return redirect(url_for('show_login'))
 
+# Login
+
 
 @insta485.app.route('/accounts/login/')
-def show_login():
+def show_account_login():
     logname = session.get('logname')
     if logname is None:
         return render_template("login.html")
@@ -55,17 +57,49 @@ def show_login():
         return redirect(url_for('show_index'))
 
 
+# Logout
 @insta485.app.route('/accounts/logout/', methods=["POST"])
-def operate_logout():
+def operate_account_logout():
     logname = session.get('logname')
     if logname:
         session.Clear()  # diff session.Abandon()
     return redirect(url_for('show_login'))
 
+# Create # NEED TO DO
 
+
+@insta485.app.route('/accounts/create/', methods=["GET"])
+def show_account_create():
+    logname = session.get("logname", "notloggedin")
+    if logname != "notloggedin":
+        return redirect(url_for("show_account_edit"))
+    create_context = {"logname": logname}
+    return render_template("create.html", **create_context)
+
+# Edit # NEED TO DO
+
+
+@insta485.app.route('/accounts/edit/', methods=["GET"])
+def show_account_edit():
+    logname = session.get("logname", "notloggedin")
+    if logname == "notloggedin" or logname is None:
+        return redirect(url_for(show_account_login))
+    connection = insta485.model.get_db()
+
+    user_result = connection.execute(
+        "SELECT username, fullname, email, filename "
+        "FROM users WHERE username = ?", (logname,)
+    )
+    curr_user = user_result.fetchone()
+    users_context = {"curr_user": curr_user}
+    return render_template("edit.html", **users_context)
+
+# Delete
 # I make this function redirect to '/'
+
+
 @insta485.app.route("/accounts/delete/")
-def show_delete():
+def show_account_delete():
     logname = session.get('logname')
     if logname is None:
         return redirect(url_for('show_login'))

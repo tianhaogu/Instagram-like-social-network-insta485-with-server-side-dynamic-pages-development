@@ -11,17 +11,16 @@ from flask import (flash, redirect, render_template, send_from_directory,
 
 
 @insta485.app.route('/users/<user_url_slug>/followers/', methods=["GET"])
-def show_user_followers(user_url_slug):
-    # Check Session
+def show_followers(user_url_slug):
+    """Display / route."""
+
+    # Check session
     logname = session.get("logname", "notloggedin")
     if logname == "notloggedin" or logname is None:
         return redirect(url_for("show_account_login"))
 
     # Connect to database
     connection = insta485.model.get_db()
-
-    # Data Dict
-    context = {'logname': logname}
 
     # Query whether the user is exists
     user_result = connection.execute(
@@ -33,22 +32,38 @@ def show_user_followers(user_url_slug):
     if not user_result.fetchall():
         abort(404)
 
-    # Query
-    follow_result = connection.execute(
-        "SELECT F.username1, F.username2, U.filename "
-        "FROM following F JOIN users U ON F.username1 = U.username "
-        "WHERE F.username2 = ?", (user_url_slug,)
+    # Query the followers of user_url_slug
+    cur = connection.execute(
+        "SELECT username1 "
+        "FROM following "
+        "WHERE username2=?",
+        [user_url_slug]
     )
-    follows = follow_result.fetchall()
+    follower_users = cur.fetchall()
+    for follower_user in follower_users:
+        follower_user['username'] = follower_user['username1']
 
-    all_follow_result = connection.execute(
-        "SELECT username1, username2 FROM following"
-    )
-    all_follows = all_follow_result.fetchall()
+        # Query owner_img_url
+        cur = connection.execute(
+            "SELECT filename "
+            "FROM users "
+            "WHERE username=?",
+            [follower_user['username']]
+        )
+        follower_user['user_img_url'] = '/uploads/' + \
+            cur.fetchone()['filename']
 
-    context = {
-        "logname": logname, "imgname": curr_img, "follows_list": follows,
-        "all_follows_list": all_follows
-    }
-    insta485.app.logger.debug(context)
+        # Query logname_follows_username
+        cur = connection.execute(
+            "SELECT username2 "
+            "FROM following "
+            "WHERE username1=? AND username2=?",
+            [logname, follower_user['username']]
+        )
+        if cur.fetchone():
+            follower_user['logname_follows_username'] = True
+        else:
+            follower_user['logname_follows_username'] = False
+    insta485.app.logger.debug(follower_users)
+    context = {"logname": logname, 'followers': follower_users}
     return render_template("followers.html", **context)
