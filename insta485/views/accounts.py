@@ -180,6 +180,10 @@ def operate_accounts():
             return redirect(url_for(target_url))
         else:
             return redirect(url_for('show_index'))
+    elif operation == "update_password":
+        logname = session.get('logname')
+        if logname is None:
+            return abort(403)
 
     else:
         return redirect(url_for('show_account_login'))

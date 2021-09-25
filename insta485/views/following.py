@@ -67,7 +67,8 @@ def show_following(user_url_slug):
         else:
             following_user['logname_follows_username'] = False
     insta485.app.logger.debug(following_users)
-    context = {"logname": logname, 'following': following_users}
+    context = {"logname": logname,
+               'following': following_users, "username": user_url_slug}
     return render_template("following.html", **context)
 
 
@@ -81,16 +82,19 @@ def operate_following():
     curl = connection.execute(
         "SELECT * "
         "FROM following "
-        "WHERE username1 = ? and username2 = ?",
+        "WHERE username1=? and username2=?",
         (logname, username)
     )
+    insta485.app.logger.debug(logname)
+    insta485.app.logger.debug(username)
     is_exist = curl.fetchall()
+    insta485.app.logger.debug(is_exist)
     if operation == 'follow':
         if is_exist:
             abort(409)
         else:
             connection.execute(
-                "INSERT INTO following(logname, username) VALUES "
+                "INSERT INTO following(username1, username2) VALUES "
                 "(?,?)",
                 (logname, username)
             )
@@ -101,11 +105,11 @@ def operate_following():
             connection.execute(
                 "DELETE FROM following "
                 "WHERE username1 = ? AND username2 = ?",
-                (logname, username)
+                (logname, username,)
             )
 
     target_url = request.args.get("target")
     if target_url:
-        return redirect(url_for(target_url))
+        return redirect(target_url)
     else:
         return redirect(url_for('show_index'))

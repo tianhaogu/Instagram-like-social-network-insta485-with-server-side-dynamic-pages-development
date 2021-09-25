@@ -65,5 +65,6 @@ def show_followers(user_url_slug):
         else:
             follower_user['logname_follows_username'] = False
     insta485.app.logger.debug(follower_users)
-    context = {"logname": logname, 'followers': follower_users}
+    context = {"logname": logname,
+               'followers': follower_users, "username": user_url_slug}
     return render_template("followers.html", **context)
