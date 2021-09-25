@@ -1,0 +1,19 @@
+{% extends "head.html" %}
+{% block content %}
+<div style="margin-left:15%;margin-right:15%">
+    <form action="/accounts/?target={{url_for('show_index')}}" method="post" enctype="multipart/form-data">
+    	<p>Photo &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<input type="file" name="file" required/></p>
+    	<p>Name&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<input type="text" name="fullname" required/></p>
+    	<p>Username&nbsp<input type="text" name="username" required/></p>
+    	<p>Email&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<input type="text" name="email" required/></p>
+    	<p>Password&nbsp&nbsp<input type="password" name="password" required/></p>
+    	<input type="submit" name="signup" value="sign up"/></p>
+    	<input type="hidden" name="operation" value="create"/></p>
+	</form>
+	<p>Have an account? 
+        <a href="{{url_for('show_account_login')}}">
+            <b>Log in</b>
+        </a>
+    </p>
+</div>
+{% endblock %}

@@ -14,7 +14,7 @@ from flask import (flash, redirect, render_template,
 def show_user(user_url_slug):
     logname = session.get('logname')
     if not logname:
-        return redirect(url_for('show_login'))
+        return redirect(url_for('show_account_login'))
     # Connect to database
     connection = insta485.model.get_db()
 

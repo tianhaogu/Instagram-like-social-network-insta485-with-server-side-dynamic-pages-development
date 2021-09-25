@@ -1,21 +1,19 @@
 {% extends "head.html" %}
-{% block head %}
-<div style="margin-top: 25px;">
-  <span>
-    <a href="/accounts/login/">
-      <b >login</b>
-    </a>
-  </span>
-  </div>
-{% endblock %}
-
-
 {% block content %}
 <!-- DO NOT CHANGE THIS (aside from styling) -->
 <form action="/accounts/?target=/" method="post" enctype="multipart/form-data">
-  <input type="text" name="username" required/>
-  <input type="password" name="password" required/>
-  <input type="submit" value="login"/>
+  <p>Enter your account and passord</p>
+  <p><input type="text" name="username" required/></p>
+  <p><input type="password" name="password" required/></p>
+  <p><input type="submit" value="login"/></p>
   <input type="hidden" name="operation" value="login"/>
 </form>
+<p>
+  <span>Don't have an account?</span>
+  <span>
+    <a href="{{url_for('show_account_create')}}">
+      <b>Sign up</b>
+    </a>
+  </span>
+</p>
 {% endblock %}

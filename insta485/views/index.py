@@ -22,7 +22,7 @@ def show_index():
     #logname = "awdeorio"
     logname = session.get('logname')
     if logname is None:
-        return redirect(url_for('show_login'))
+        return redirect(url_for('show_account_login'))
     # ======end=========
 
     # Connect to database

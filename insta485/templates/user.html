@@ -4,7 +4,9 @@
     <h1>{{username}}</h1>
     {% if username == logname %}
       <p>
-        <b>Edit profile</b>
+        <a href="{{url_for('show_account_edit')}}">
+          <b>Edit profile</b>
+        </a>
           <!-- DO NOT CHANGE THIS (aside from where we say 'FIXME') -->
           <form action="<FIXME_LOGOUT_PAGE_URL_HERE>" method="post" enctype="multipart/form-data">
             <input type="submit" name="logout" value="Logout"/>
