@@ -34,7 +34,7 @@ CREATE TABLE comments(
     text VARCHAR(100) NOT NULL,
     created DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY(owner) REFERENCES users(username) ON DELETE CASCADE,
-    FOREIGN KEY(postid) REFERENCES posts(postid)
+    FOREIGN KEY(postid) REFERENCES posts(postid) ON DELETE CASCADE
 );
 
 CREATE TABLE likes(
@@ -43,5 +43,5 @@ CREATE TABLE likes(
     postid INTEGER NOT NULL,
     created DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY(owner) REFERENCES users(username) ON DELETE CASCADE,
-    FOREIGN KEY(postid) REFERENCES posts(postid)
+    FOREIGN KEY(postid) REFERENCES posts(postid) ON DELETE CASCADE
 );
