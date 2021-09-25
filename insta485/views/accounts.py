@@ -5,6 +5,7 @@ URLs include:
 /
 """
 import pathlib
+import os
 import uuid
 import hashlib
 import insta485
@@ -160,15 +161,25 @@ def operate_accounts():
         if logname is None:
             return abort(403)
 
-        user_post_result = connection.execute(
-            "SELECT U.username, U.filename AS Ufname, P.filename AS Pfname "
-            "FROM users U JOIN posts P ON U.username = P.owner "
-            "WHERE U.username = ?", (logname,)
+        user_result = connection.execute(
+            "SELECT username, filename FROM users "
+            "WHERE username = ?", (logname,)
         )
-        curr_result = user_post_result.fetchone()
+        curr_user = user_post_result.fetchone()
+        ufilename = insta485.app.config["UPLOAD_FOLDER"]/curr_user["filename"]
+        with open(ufilename, 'r') as handle_ufile:
+            os.remove(ufilename)
 
-        ufilename = insta485.app.config["UPLOAD_FOLDER"]/curr_result["Ufname"]
-        ufilename = insta485.app.config["UPLOAD_FOLDER"]/curr_result["Pfname"]
+        user_post_result = connection.execute(
+            "SELECT owner, filename FROM posts "
+            "WHERE owner = ?", (logname,)
+        )
+        curr_posts = user_post_result.fetchall()
+        for curr_post in curr_posts:
+            pfilename = insta485.app.config["UPLOAD_FOLDER"]/\
+                        curr_post["filename"]
+            with open(pfilename, 'r') as handle_pfile:
+                os.remove(pfilename)
 
         connection.execute(
             "DELETE FROM users WHERE username = ?", (logname,)
@@ -177,7 +188,7 @@ def operate_accounts():
         session.clear()
         target_url = request.args.get("target")
         if target_url:
-            return redirect(url_for(target_url))
+            return redirect(target_url)
         else:
             return redirect(url_for('show_index'))
     elif operation == "update_password":
