@@ -68,7 +68,7 @@ def operate_comment():
             "(?, ?, ?)", (logname, postid_value, text_value,)
         )
     elif operation_value == "delete":
-        if curr_comment["owner"] == logname:
+        if curr_comment["owner"] != logname:
             flask.abort(400)
         connection.execute(
             "DELETE FROM comments WHERE commentid = ?", (comment_value,)
