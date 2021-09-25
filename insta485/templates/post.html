@@ -57,7 +57,7 @@
             <!-- DO NOT CHANGE THIS (aside from where we say 'FIXME') -->
               <form action="/comments/?target={{url_for('show_post', postid_url_slug=postid)}}" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="operation" value="delete"/>
-                <input type="hidden" name="commentid" value="{{comments.commentid}}"/>
+                <input type="hidden" name="commentid" value="{{comment.commentid}}"/>
                 <input type="submit" name="uncomment" value="delete"/>
               </form>
           {% endif %}

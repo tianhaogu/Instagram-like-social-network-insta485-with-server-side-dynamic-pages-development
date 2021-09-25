@@ -34,7 +34,8 @@ def operate_like():
             insta485.app.logger.debug(likes)
             flask.abort(409)
         connection.execute(
-            "DELETE FROM likes WHERE postid = ?", (postid_value,)
+            "DELETE FROM likes WHERE postid = ? AND owner = ?", 
+            (postid_value, logname,)
         )
     else:
         pass

@@ -7,6 +7,7 @@ URLs include:
 import flask
 import os
 import arrow
+import uuid
 import insta485
 from flask import (flash, redirect, render_template,
                    request, session, url_for)
