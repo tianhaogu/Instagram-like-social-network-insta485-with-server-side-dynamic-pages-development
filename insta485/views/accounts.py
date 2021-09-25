@@ -10,7 +10,7 @@ import uuid
 import hashlib
 import insta485
 from flask import (flash, redirect, render_template,
-                   request, session, url_for, abort)
+                   request, session, url_for)
 
 
 @insta485.app.route('/accounts/login/', methods=["GET"])
@@ -100,7 +100,7 @@ def operate_accounts():
         if not password_db:
             return abort(403)
         (algorithm, salt,
-         password_hash_db) = password_db['password'].split('$')
+            password_hash_db) = password_db['password'].split('$')
         hash_obj = hashlib.new(algorithm)
         password_salted = salt + password
         hash_obj.update(password_salted.encode('utf-8'))
@@ -116,7 +116,7 @@ def operate_accounts():
         fullname = request.form.get("fullname")
         email = request.form.get("email")
         fileobj = request.files.get("file")
-        if (username is None or password is None or fullname is None
+        if (username is None or password is None or fullname is None\
                 or email is None or fileobj is None):
             flask.abort(400)
 
@@ -146,7 +146,7 @@ def operate_accounts():
 
         connection.execute(
             "INSERT INTO users(username, fullname, email, filename, password)"
-            " VALUES (?, ?, ?, ?, ?)",
+            " VALUES (?, ?, ?, ?, ?)", 
             (username, fullname, email, filename, password_db_string)
         )
 
@@ -161,17 +161,27 @@ def operate_accounts():
         if logname is None:
             return abort(403)
 
+        user_post_result = connection.execute(
+            "SELECT U.username, U.filename AS Ufname, P.filename AS Pfname "
+            "FROM users U JOIN posts P ON U.username = P.owner "
+            "WHERE U.username = ?", (logname,)
+        )
+        curr_result = user_post_result.fetchone()
+
+        ufilename = insta485.app.config["UPLOAD_FOLDER"]/curr_result["Ufname"]
+        ufilename = insta485.app.config["UPLOAD_FOLDER"]/curr_result["Pfname"]
+
         connection.execute(
-            "ON DELETE CASCADE"
+            "DELETE FROM users WHERE username = ?", (logname,)
         )
 
         session.clear()
-
-        target_url = request.args['target']
+        target_url = request.args.get("target")
         if target_url:
             return redirect(url_for(target_url))
         else:
             return redirect(url_for('show_index'))
+
 
     else:
         return redirect(url_for('show_account_login'))
