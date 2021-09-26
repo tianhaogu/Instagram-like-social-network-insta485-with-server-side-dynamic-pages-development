@@ -15,6 +15,7 @@ from flask import (flash, redirect, render_template,
 
 @insta485.app.route('/accounts/login/', methods=["GET"])
 def show_account_login():
+    """Get account login."""
     logname = session.get("logname", "notloggedin")
     if logname == "notloggedin" or logname is None:
         return render_template("login.html")
@@ -24,6 +25,7 @@ def show_account_login():
 
 @insta485.app.route('/accounts/logout/', methods=["POST"])
 def operate_account_logout():
+    """Post account logout."""
     logname = session.get('logname')
     if logname:
         session.clear()
@@ -32,9 +34,7 @@ def operate_account_logout():
 
 @insta485.app.route('/accounts/create/', methods=["GET"])
 def show_account_create():
-    # logname = session.get("logname", "notloggedin")
-    # if logname != "notloggedin":
-    #     return redirect(url_for("show_account_edit"))
+    """Get account create."""
     logname = session.get("logname")
     if logname is not None:
         return redirect(url_for("show_account_edit"))
@@ -45,6 +45,7 @@ def show_account_create():
 
 @insta485.app.route("/accounts/delete/", methods=["GET"])
 def show_account_delete():
+    """Get account delete."""
     logname = session.get('logname')
     if logname is None:
         return redirect(url_for('show_account_login'))
@@ -55,6 +56,7 @@ def show_account_delete():
 
 @insta485.app.route('/accounts/edit/', methods=["GET"])
 def show_account_edit():
+    """Get account edit."""
     logname = session.get("logname", "notloggedin")
     if logname == "notloggedin" or logname is None:
         return redirect(url_for(show_account_login))
@@ -67,12 +69,13 @@ def show_account_edit():
     curr_user = user_result.fetchone()
     curr_user['filename'] = '/uploads/' + curr_user['filename']
 
-    users_context = {"logname":logname, "curr_user": curr_user}
+    users_context = {"logname": logname, "curr_user": curr_user}
     return render_template("edit.html", **users_context)
 
 
 @insta485.app.route('/accounts/password/', methods=["GET"])
 def show_account_password():
+    """Get account password."""
     logname = session.get("logname", "notloggedin")
     if logname == "notloggedin" or logname is None:
         return redirect(url_for("show_account_login"))
@@ -80,8 +83,8 @@ def show_account_password():
     return render_template("password.html")
 
 
-
 def login_operation(connection):
+    """Post account login."""
     logname = request.form['username']
     password = request.form['password']
     if not logname or not password:
@@ -111,6 +114,7 @@ def login_operation(connection):
 
 
 def create_operation(connection):
+    """Post account create."""
     username = request.form.get("username")
     password = request.form.get("password")
     fullname = request.form.get("fullname")
@@ -153,6 +157,7 @@ def create_operation(connection):
 
 
 def delete_operation(connection):
+    """Post account delete."""
     logname = session.get('logname')
     if logname is None:
         return abort(403)
@@ -184,6 +189,7 @@ def delete_operation(connection):
 
 
 def update_password_operation(connection):
+    """Post account password update."""
     logname = session.get('logname')
     if logname is None:
         return abort(403)
@@ -237,6 +243,7 @@ def update_password_operation(connection):
 
 
 def edit_account_operation(connection):
+    """Post account edit."""
     # Check login
     logname = session.get('logname')
     if logname is None:
@@ -292,6 +299,7 @@ def edit_account_operation(connection):
 
 @insta485.app.route('/accounts/', methods=["POST"])
 def operate_accounts():
+    """Post all account operations."""
     operation = request.form['operation']
     connection = insta485.model.get_db()
     if operation == 'login':
@@ -316,4 +324,3 @@ def operate_accounts():
         return redirect(url_for("show_index"))
     else:
         return redirect(request.args.get("target"))
-
