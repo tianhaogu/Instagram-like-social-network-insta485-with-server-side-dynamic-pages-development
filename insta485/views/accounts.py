@@ -195,7 +195,7 @@ def operate_accounts():
             return redirect(target_url)
         else:
             return redirect(url_for('show_index'))
-    
+
     elif operation == "update_password":
         # Check login
         logname = session.get('logname')
@@ -262,17 +262,11 @@ def operate_accounts():
         email = request.form.get("email")
         fileobj = request.files.get("file")
 
-        if not fullname or email:
+        if not fullname or not email:
+            insta485.app.logger.debug("NO Warning!@!!!")
             return abort(400)
+
         if fileobj:
-            # save the file
-            filename = fileobj.filename
-            uuid_basename = "{stem}{suffix}".format(
-                stem=uuid.uuid4().hex,
-                suffix=pathlib.Path(filename).suffix
-            )
-            path = insta485.app.config["UPLOAD_FOLDER"]/uuid_basename
-            fileobj.save(path)
             # delete the file
             curl = connection.execute(
                 "SELECT filename "
@@ -283,6 +277,7 @@ def operate_accounts():
             curr_user = curl.fetchone()
             ufilename = insta485.app.config["UPLOAD_FOLDER"] / \
                 curr_user["filename"]
+            insta485.app.logger.debug(str(ufilename))
             with open(ufilename, 'r') as handle_ufile:
                 os.remove(ufilename)
 
@@ -308,6 +303,11 @@ def operate_accounts():
             "WHERE username=?",
             [fullname, email, logname]
         )
+        target_url = request.args.get("target")
+        if target_url:
+            return redirect(target_url)
+        else:
+            return redirect(url_for('show_index'))
 
         #
 
