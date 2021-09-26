@@ -15,11 +15,10 @@ from flask import (flash, redirect, render_template,
 @insta485.app.route('/')
 def show_index():
     """Display / route."""
-
     # need to add seesion
     # ======begin=========
     # ====================
-    #logname = "awdeorio"
+    # logname = "awdeorio"
     logname = session.get('logname')
     if logname is None:
         return redirect(url_for('show_account_login'))

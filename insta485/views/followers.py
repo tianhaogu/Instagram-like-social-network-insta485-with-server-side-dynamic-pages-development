@@ -13,7 +13,6 @@ from flask import (flash, redirect, render_template, send_from_directory,
 @insta485.app.route('/users/<user_url_slug>/followers/', methods=["GET"])
 def show_followers(user_url_slug):
     """Display / route."""
-
     # Check session
     logname = session.get("logname", "notloggedin")
     if logname == "notloggedin" or logname is None:

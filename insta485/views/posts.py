@@ -112,8 +112,9 @@ def operate_post():
     else:
         pass
 
-    if (request.args.get("target", "notarget") == "notarget" 
+    if (request.args.get("target", "notarget") == "notarget"
             or request.args.get("target") is None):
-        return flask.redirect(flask.url_for('show_user', user_url_slug=logname))
+        return flask.redirect(flask.url_for('show_user',
+                                            user_url_slug=logname))
     else:
         return flask.redirect(request.args.get("target"))

@@ -14,7 +14,6 @@ from flask import (flash, redirect, render_template,
 @insta485.app.route('/users/<user_url_slug>/following/')
 def show_following(user_url_slug):
     """Display / route."""
-
     # Check session
     logname = session.get("logname", "notloggedin")
     if logname == "notloggedin" or logname is None:
