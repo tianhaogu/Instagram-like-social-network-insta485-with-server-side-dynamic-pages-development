@@ -203,9 +203,9 @@ def operate_accounts():
             return abort(403)
         # Get Data
         password = request.form.get("password")
-        newpassword1 = request.form.get("newpassword1")
-        newpassword2 = request.form.get("newpassword2")
-        if not password or newpassword1 or newpassword2:
+        newpassword1 = request.form.get("new_password1")
+        newpassword2 = request.form.get("new_password2")
+        if not password or not newpassword1 or not newpassword2:
             return abort(400)
 
         # Query database
