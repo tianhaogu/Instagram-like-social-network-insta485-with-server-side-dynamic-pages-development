@@ -249,6 +249,11 @@ def operate_accounts():
             "WHERE username=?",
             [password_db_string, logname]
         )
+        target_url = request.args.get("target")
+        if target_url:
+            return redirect(target_url)
+        else:
+            return redirect(url_for('show_index'))
 
         # Warning: Maybe need to redirect
 
