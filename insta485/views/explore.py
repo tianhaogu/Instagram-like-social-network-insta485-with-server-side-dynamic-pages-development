@@ -23,38 +23,26 @@ def show_explore():
 
     # Query the folloing of logname
     cur = connection.execute(
+        "SELECT DISTINCT username "
+        "FROM users "
+        "WHERE username NOT IN ( "
         "SELECT DISTINCT username2 "
         "FROM following "
-        "WHERE username1=?",
-        [logname]
+        "WHERE username1=?) "
+        "AND username!=?",
+        [logname, logname]
     )
-    following_users = cur.fetchall()
-    following_users_sets = set([item['username2'] for item in following_users])
-    following_users_sets.add(logname)
-    # Query the not following of logname
-    cur = connection.execute(
-        "SELECT DISTINCT username2 "
-        "FROM following "
-        "WHERE username1!=?",
-        [logname]
-    )
-    not_follow_users = cur.fetchall()
+    explore_users = cur.fetchall()
 
-    # Get the not following
-    not_follow_users = [
-        item for item in not_follow_users if item['username2'] not in following_users_sets]
-
-    for not_follow_user in not_follow_users:
-        not_follow_user['username'] = not_follow_user['username2']
-
+    for explore_user in explore_users:
         # Query owner_img_url
         cur = connection.execute(
             "SELECT filename "
             "FROM users "
             "WHERE username=?",
-            [not_follow_user['username']]
+            [explore_user['username']]
         )
-        not_follow_user['user_img_url'] = '/uploads/' + \
+        explore_user['user_img_url'] = '/uploads/' + \
             cur.fetchone()['filename']
-    context = {"logname": logname, 'not_following': not_follow_users}
+    context = {"logname": logname, 'not_following': explore_users}
     return render_template("explore.html", **context)
