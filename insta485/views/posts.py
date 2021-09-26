@@ -5,6 +5,7 @@ URLs include:
 /
 """
 import flask
+import pathlib
 import os
 import arrow
 import uuid
@@ -106,7 +107,7 @@ def operate_post():
 
         connection.execute(
             "INSERT INTO posts(filename, owner) VALUES "
-            "(?, ?)", (filename, logname)
+            "(?, ?)", (uuid_basename, logname)
         )
     else:
         pass

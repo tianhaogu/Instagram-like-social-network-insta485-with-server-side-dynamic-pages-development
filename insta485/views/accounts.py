@@ -147,7 +147,7 @@ def operate_accounts():
         connection.execute(
             "INSERT INTO users(username, fullname, email, filename, password)"
             " VALUES (?, ?, ?, ?, ?)",
-            (username, fullname, email, filename, password_db_string)
+            (username, fullname, email, uuid_basename, password_db_string)
         )
 
         session["logname"] = username
@@ -191,10 +191,6 @@ def operate_accounts():
             return redirect(target_url)
         else:
             return redirect(url_for('show_index'))
-    elif operation == "update_password":
-        logname = session.get('logname')
-        if logname is None:
-            return abort(403)
 
     else:
         return redirect(url_for('show_account_login'))

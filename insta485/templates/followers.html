@@ -19,7 +19,7 @@
             <span>following</span>
             <span>
               <!-- DO NOT CHANGE THIS (aside from where we say 'FIXME') -->
-              <form action="{{url_for('operate_following')}}?target={{ "/users/" ~ username ~ "/followers/" }}" method="post" enctype="multipart/form-data">
+              <form action="/following/?target={{url_for('show_followers', user_url_slug=username)}}" method="post" enctype="multipart/form-data">
                 <input type="submit" name="unfollow" value="unfollow"/>
                 <input type="hidden" name="username" value="{{follower.username}}"/>
                 <input type="hidden" name="operation" value="unfollow"/>

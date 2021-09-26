@@ -95,8 +95,7 @@ def operate_following():
         else:
             connection.execute(
                 "INSERT INTO following(username1, username2) VALUES "
-                "(?,?)",
-                (logname, username)
+                "(?, ?)", (logname, username,)
             )
     if operation == 'unfollow':
         if not is_exist:

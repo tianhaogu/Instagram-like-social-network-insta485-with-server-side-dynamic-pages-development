@@ -3,7 +3,7 @@
 {% block content %}
 <!-- DO NOT CHANGE THIS -->
 <div style="margin-left:15%;margin-right:15%">
-  <form action="/accounts?target=/" method="post" enctype="multipart/form-data">
+  <form action="/accounts/?target={{url_for('show_account_create')}}" method="post" enctype="multipart/form-data">
     {{logname}}
     <input type="submit" name="delete" value="confirm delete account"/>
     <input type="hidden" name="operation" value="delete"/>
