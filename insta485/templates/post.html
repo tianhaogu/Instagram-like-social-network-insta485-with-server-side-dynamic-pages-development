@@ -21,7 +21,7 @@
       <img src="{{img_url}}" alt="UserPostPhoto">
     </div>
     <div class="userParagraph">
-      {% if likes <= 1 %}
+      {% if likes == 1 %}
         <p>{{likes}} like</p>
       {% else %}
         <p>{{likes}} likes</p>
@@ -72,6 +72,7 @@
           <input type="submit" name="comment" value="comment"/>
         </form>
       </p>
+      {% if logname == owner %}
       <p>
         <!-- DO NOT CHANGE THIS (aside from where we say 'FIXME') -->
         <form action="/posts/?target={{url_for('show_user', user_url_slug=logname)}}" method="post" enctype="multipart/form-data">
@@ -80,6 +81,7 @@
           <input type="submit" name="delete" value="delete this post"/>
         </form>
       </p>
+      {% endif %}
   </div>
   </div>
   <br>

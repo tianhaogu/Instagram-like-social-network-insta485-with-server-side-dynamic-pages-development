@@ -1,20 +1,14 @@
 {% extends "base.html" %}
 {% block content %}
-<div style="margin-left:15%;margin-right:15%">
-  <h1>Discover People</h1>
-  {% for follower in not_following %}
-    <div class="userDiv">
-      <div class="userHeader">
-        <a href="{{ "/users/" ~ follower.username ~ "/" }}">
-          <div>
-            <div style="display: inline-block;vertical-align: middle;">
-              <img src="{{follower.user_img_url}}" width="30" height="30" alt="userPhoto">
-            </div>
-            <b style="display: inline-block;vertical-align: middle;">{{follower.username}}</b>
-          </div>
-        </a>
-      </div>
-    </div>
-  {% endfor %}
-</div>
+    {% for prospect in not_following %}
+        <img src={{ prospect.user_img_url }} alt="">
+        <a href="/u/{{ prospect.username }}/"> {{ prospect.username }} </a>
+
+    <!-- DO NOT CHANGE THIS (aside from where we say 'FIXME') -->
+    <form action="/following/?target={{url_for('show_explore')}}" method="post" enctype="multipart/form-data">
+      <input type="submit" name="follow" value="follow"/>
+      <input type="hidden" name="username" value="{{prospect.username}}"/>
+      <input type="hidden" name="operation" value="follow"/>
+    </form>
+    {% endfor %}
 {% endblock %}
