@@ -78,8 +78,8 @@ def show_account_password():
     logname = session.get("logname", "notloggedin")
     if logname == "notloggedin" or logname is None:
         return redirect(url_for("show_account_login"))
-
-    return render_template("password.html")
+    text = {'logname':logname}
+    return render_template("password.html", **text)
 
 
 def login_operation(connection):

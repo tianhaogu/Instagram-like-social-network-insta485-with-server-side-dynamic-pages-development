@@ -134,6 +134,7 @@ def crawl(client, outputdir, todo, done):
         return
 
     # Ignore logout route
+    print("GET", path, "FROM", url_pair.source)
     if "logout" in path:
         done.add(path)
         crawl(client, outputdir, todo, done)
