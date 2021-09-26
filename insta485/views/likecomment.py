@@ -31,7 +31,7 @@ def operate_like():
         )
     elif operation_value == "unlike":
         if {"owner": logname} not in likes:
-            insta485.app.logger.debug(likes)
+            # insta485.app.logger.debug(likes)
             flask.abort(409)
         connection.execute(
             "DELETE FROM likes WHERE postid = ? AND owner = ?",

@@ -43,9 +43,6 @@ def show_index():
     following_set.add(logname)
     users = [item for item in users if item['owner'] in following_set]
 
-    for item in users:
-        insta485.app.logger.debug(item['created'])
-
     for user in users:
         time = arrow.get(user['created'], 'YYYY-MM-DD HH:mm:ss')
         user['timestamp'] = time.humanize()
@@ -89,7 +86,7 @@ def show_index():
             user['is_logname_like'] = True
         else:
             user['is_logname_like'] = False
-        insta485.app.logger.debug(cur.fetchone())
+        # insta485.app.logger.debug(cur.fetchone())
 
     # Add database info to context
     context = {"logname": logname, 'posts': users}

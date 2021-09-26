@@ -82,5 +82,5 @@ def show_user(user_url_slug):
     context['total_posts'] = len(context['posts'])
     for item in context['posts']:
         item['img_url'] = '/uploads/' + item['img_url']
-        insta485.app.logger.debug(item['img_url'])
+        # insta485.app.logger.debug(item['img_url'])
     return render_template("user.html", **context)

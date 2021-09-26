@@ -14,7 +14,7 @@ def show_following(user_url_slug):
     """Display / route."""
     # Check session
     logname = session.get("logname", "notloggedin")
-    if logname == "notloggedin" or logname is None:
+    if logname is None or logname == "notloggedin":
         return redirect(url_for("show_account_login"))
 
     # Connect to database
@@ -23,9 +23,8 @@ def show_following(user_url_slug):
     # Query whether the user is exists
     user_result = connection.execute(
         "SELECT username, filename "
-        "FROM users "
-        "WHERE username=?",
-        [user_url_slug]
+        "FROM users WHERE username = ?",
+        (user_url_slug,)
     )
     if not user_result.fetchall():
         abort(404)
@@ -33,11 +32,10 @@ def show_following(user_url_slug):
     # Query the following of user_url_slug
     cur = connection.execute(
         "SELECT username2 "
-        "FROM following "
-        "WHERE username1=?",
-        [user_url_slug]
+        "FROM following WHERE username1=?",
+        (user_url_slug,)
     )
-    insta485.app.logger.debug(user_url_slug)
+    # insta485.app.logger.debug(user_url_slug)
     following_users = cur.fetchall()
     for following_user in following_users:
         following_user['username'] = following_user['username2']
@@ -45,9 +43,8 @@ def show_following(user_url_slug):
         # Query owner_img_url
         cur = connection.execute(
             "SELECT filename "
-            "FROM users "
-            "WHERE username=?",
-            [following_user['username']]
+            "FROM users WHERE username=?",
+            (following_user['username'],)
         )
         following_user['user_img_url'] = '/uploads/' + \
             cur.fetchone()['filename']
@@ -55,17 +52,16 @@ def show_following(user_url_slug):
         # Query logname_follows_username
         cur = connection.execute(
             "SELECT username2 "
-            "FROM following "
-            "WHERE username1=? AND username2=?",
-            [logname, following_user['username']]
+            "FROM following WHERE username1 = ? AND username2 = ?",
+            (logname, following_user['username'],)
         )
         if cur.fetchone():
             following_user['logname_follows_username'] = True
         else:
             following_user['logname_follows_username'] = False
-    insta485.app.logger.debug(following_users)
-    context = {"logname": logname,
-               'following': following_users, "username": user_url_slug}
+    # insta485.app.logger.debug(following_users)
+    context = {"logname": logname, "following": following_users,
+               "username": user_url_slug}
     return render_template("following.html", **context)
 
 
@@ -83,10 +79,10 @@ def operate_following():
         "WHERE username1=? and username2=?",
         (logname, username)
     )
-    insta485.app.logger.debug(logname)
-    insta485.app.logger.debug(username)
+    # insta485.app.logger.debug(logname)
+    # insta485.app.logger.debug(username)
     is_exist = curl.fetchall()
-    insta485.app.logger.debug(is_exist)
+    # insta485.app.logger.debug(is_exist)
     if operation == 'follow':
         if is_exist:
             abort(409)

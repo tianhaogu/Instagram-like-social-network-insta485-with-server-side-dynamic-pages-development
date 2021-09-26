@@ -102,8 +102,8 @@ def operate_post():
             stem=uuid.uuid4().hex,
             suffix=pathlib.Path(filename).suffix
         )
-        path = insta485.app.config["UPLOAD_FOLDER"]/uuid_basename
-        fileobj.save(path)
+        post_path = insta485.app.config["UPLOAD_FOLDER"]/uuid_basename
+        fileobj.save(post_path)
 
         connection.execute(
             "INSERT INTO posts(filename, owner) VALUES "
