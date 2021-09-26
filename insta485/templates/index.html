@@ -30,15 +30,12 @@
         {% endif %}
         {% for comment in post.comments %}
         <p>
-          <span>
-            <a href="{{"/users/" ~ comment.owner ~ "/"}}">
-              <b>{{comment.owner}}</b>
-            </a>  
-          </span>
-          <span>{{comment.text}}</span>
+          <a href="{{"/users/" ~ comment.owner ~ "/"}}">
+            <b>{{comment.owner}}</b>
+          </a>  
+          {{comment.text}}
         </p>  
         {% endfor %}
-        <p>
           {% if post.is_logname_like %}
             <!-- DO NOT CHANGE THIS (aside from where we say 'FIXME') -->
             <form action="/likes/?target=/" method="post" enctype="multipart/form-data">
@@ -55,16 +52,13 @@
               <input type="submit" name="like" value="like"/>
             </form>
           {% endif %}
-        </p>
-        <p>
-          <!-- DO NOT CHANGE THIS (aside from where we say 'FIXME') -->
-          <form action="/comments/?target=/" method="post" enctype="multipart/form-data">
-            <input type="hidden" name="operation" value="create"/>
-            <input type="hidden" name="postid" value="{{post.postid}}"/>
-            <input type="text" name="text" required/>
-            <input type="submit" name="comment" value="comment"/>
-          </form>
-        </p>
+        <!-- DO NOT CHANGE THIS (aside from where we say 'FIXME') -->
+        <form action="/comments/?target=/" method="post" enctype="multipart/form-data">
+          <input type="hidden" name="operation" value="create"/>
+          <input type="hidden" name="postid" value="{{post.postid}}"/>
+          <input type="text" name="text" required/>
+          <input type="submit" name="comment" value="comment"/>
+        </form>
 
       </div>
     </div>
