@@ -1,7 +1,7 @@
 {% extends "head.html" %}
 {% block content %}
 <!-- DO NOT CHANGE THIS (aside from styling) -->
-<form action="/accounts/?target=/" method="post" enctype="multipart/form-data">
+<form action="/accounts/?target={{url_for('show_index')}}" method="post" enctype="multipart/form-data">
   <p>Enter your account and passord</p>
   <p><input type="text" name="username" required/></p>
   <p><input type="password" name="password" required/></p>

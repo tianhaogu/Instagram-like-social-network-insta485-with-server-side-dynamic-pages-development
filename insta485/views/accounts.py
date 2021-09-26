@@ -32,8 +32,11 @@ def operate_account_logout():
 
 @insta485.app.route('/accounts/create/', methods=["GET"])
 def show_account_create():
-    logname = session.get("logname", "notloggedin")
-    if logname != "notloggedin":
+    # logname = session.get("logname", "notloggedin")
+    # if logname != "notloggedin":
+    #     return redirect(url_for("show_account_edit"))
+    logname = session.get("logname")
+    if logname is not None:
         return redirect(url_for("show_account_edit"))
 
     create_context = {"logname": logname}
@@ -44,7 +47,7 @@ def show_account_create():
 def show_account_delete():
     logname = session.get('logname')
     if logname is None:
-        return redirect(url_for('show_login'))
+        return redirect(url_for('show_account_login'))
 
     context = {"logname": logname}
     return render_template("delete.html", **context)
@@ -71,66 +74,196 @@ def show_account_edit():
 def show_account_password():
     logname = session.get("logname", "notloggedin")
     if logname == "notloggedin" or logname is None:
-        return redirect(url_for("show_login"))
+        return redirect(url_for("show_account_login"))
 
     return render_template("password.html")
 
 
-@insta485.app.route('/accounts/', methods=["POST"])
-def operate_accounts():
-    operation = request.form['operation']
-    connection = insta485.model.get_db()
-    if operation == 'login':
-        logname = request.form['username']
-        password = request.form['password']
-        if not logname:
-            abort(400)
-        if not password:
-            abort(400)
-        insta485.app.logger.error(logname + ' ' + password)
+def login_operation(connection):
+    logname = request.form['username']
+    password = request.form['password']
+    if not logname or not password:
+        abort(400)
 
-        # Query database
-        cur = connection.execute(
-            "SELECT password "
+    cur = connection.execute(
+        "SELECT password "
+        "FROM users "
+        "WHERE username=?",
+        [logname]
+    )
+    password_db = cur.fetchone()
+    if not password_db:
+        return abort(403)
+
+    # Check the password
+    (algorithm, salt,
+        password_hash_db) = password_db['password'].split('$')
+    hash_obj = hashlib.new(algorithm)
+    password_salted = salt + password
+    hash_obj.update(password_salted.encode('utf-8'))
+    password_hash = hash_obj.hexdigest()
+
+    if not password_hash == password_hash_db:
+        return abort(403)
+    session['logname'] = logname
+
+
+def create_operation(connection):
+    username = request.form.get("username")
+    password = request.form.get("password")
+    fullname = request.form.get("fullname")
+    email = request.form.get("email")
+    fileobj = request.files.get("file")
+    if (username is None or password is None or fullname is None
+            or email is None or fileobj is None):
+        flask.abort(400)
+
+    user_search = connection.execute(
+        "SELECT username FROM users "
+        "WHERE username = ?", (username,)
+    )
+    if user_search.fetchone() is not None:
+        flask.abort(409)
+
+    filename = fileobj.filename
+    uuid_basename = "{stem}{suffix}".format(
+        stem=uuid.uuid4().hex,
+        suffix=pathlib.Path(filename).suffix
+    )
+    path = insta485.app.config["UPLOAD_FOLDER"]/uuid_basename
+    fileobj.save(path)
+
+    algorithm = 'sha512'
+    salt = uuid.uuid4().hex
+    hash_obj = hashlib.new(algorithm)
+    password_salted = salt + password
+    hash_obj.update(password_salted.encode('utf-8'))
+    password_hash = hash_obj.hexdigest()
+    password_db_string = "$".join([algorithm, salt, password_hash])
+    print(password_db_string)
+
+    connection.execute(
+        "INSERT INTO users(username, fullname, email, filename, password)"
+        " VALUES (?, ?, ?, ?, ?)",
+        (username, fullname, email, uuid_basename, password_db_string)
+    )
+    session["logname"] = username
+
+
+def delete_operation(connection):
+    logname = session.get('logname')
+    if logname is None:
+        return abort(403)
+
+    user_result = connection.execute(
+        "SELECT username, filename FROM users "
+        "WHERE username = ?", (logname,)
+    )
+    curr_user = user_result.fetchone()
+    ufilename = insta485.app.config["UPLOAD_FOLDER"]/curr_user["filename"]
+    with open(ufilename, 'r') as handle_ufile:
+        os.remove(ufilename)
+
+    user_post_result = connection.execute(
+        "SELECT owner, filename FROM posts "
+        "WHERE owner = ?", (logname,)
+    )
+    curr_posts = user_post_result.fetchall()
+    for curr_post in curr_posts:
+        pfilename = insta485.app.config["UPLOAD_FOLDER"] /\
+            curr_post["filename"]
+        with open(pfilename, 'r') as handle_pfile:
+            os.remove(pfilename)
+
+    connection.execute(
+        "DELETE FROM users WHERE username = ?", (logname,)
+    )
+    session.clear()
+
+
+def update_password_operation(connection):
+    logname = session.get('logname')
+    if logname is None:
+        return abort(403)
+
+    password = request.form.get("password")
+    newpassword1 = request.form.get("new_password1")
+    newpassword2 = request.form.get("new_password2")
+    if not password or not newpassword1 or not newpassword2:
+        return abort(400)
+
+    cur = connection.execute(
+        "SELECT password "
+        "FROM users "
+        "WHERE username=?",
+        [logname]
+    )
+
+    password_db = cur.fetchone()
+    if not password_db:
+        return abort(403)
+
+    # Check the password
+    (algorithm, salt,
+        password_hash_db) = password_db['password'].split('$')
+    hash_obj = hashlib.new(algorithm)
+    password_salted = salt + password
+    hash_obj.update(password_salted.encode('utf-8'))
+    password_hash = hash_obj.hexdigest()
+
+    if not password_hash == password_hash_db:
+        return abort(403)
+
+    # Update newpassword
+    if newpassword1 != newpassword2:
+        return abort(401)
+    algorithm = 'sha512'
+    salt = uuid.uuid4().hex
+    hash_obj = hashlib.new(algorithm)
+    password_salted = salt + newpassword1
+    hash_obj.update(password_salted.encode('utf-8'))
+    password_hash = hash_obj.hexdigest()
+    password_db_string = "$".join([algorithm, salt, password_hash])
+
+    # Update database
+    connection.execute(
+        "UPDATE users "
+        "SET password=? "
+        "WHERE username=?",
+        [password_db_string, logname]
+    )
+
+
+def edit_account_operation(connection):
+    # Check login
+    logname = session.get('logname')
+    if logname is None:
+        return abort(403)
+    # Get data
+    fullname = request.form.get("fullname")
+    email = request.form.get("email")
+    fileobj = request.files.get("file")
+
+    if not fullname or not email:
+        insta485.app.logger.debug("NO Warning!@!!!")
+        return abort(400)
+
+    if fileobj:
+        # delete the file
+        curl = connection.execute(
+            "SELECT filename "
             "FROM users "
             "WHERE username=?",
             [logname]
         )
+        curr_user = curl.fetchone()
+        ufilename = insta485.app.config["UPLOAD_FOLDER"] / \
+            curr_user["filename"]
+        insta485.app.logger.debug(str(ufilename))
+        with open(ufilename, 'r') as handle_ufile:
+            os.remove(ufilename)
 
-        password_db = cur.fetchone()
-        if not password_db:
-            return abort(403)
-
-        # Check the password
-        (algorithm, salt,
-            password_hash_db) = password_db['password'].split('$')
-        hash_obj = hashlib.new(algorithm)
-        password_salted = salt + password
-        hash_obj.update(password_salted.encode('utf-8'))
-        password_hash = hash_obj.hexdigest()
-
-        if not password_hash == password_hash_db:
-            return abort(403)
-        session['logname'] = logname
-        return redirect(url_for('show_index'))
-
-    elif operation == "create":
-        username = request.form.get("username")
-        password = request.form.get("password")
-        fullname = request.form.get("fullname")
-        email = request.form.get("email")
-        fileobj = request.files.get("file")
-        if (username is None or password is None or fullname is None
-                or email is None or fileobj is None):
-            flask.abort(400)
-
-        user_search = connection.execute(
-            "SELECT username FROM users "
-            "WHERE username = ?", (username,)
-        )
-        if user_search.fetchone() is not None:
-            flask.abort(409)
-
+        # insert new file
         filename = fileobj.filename
         uuid_basename = "{stem}{suffix}".format(
             stem=uuid.uuid4().hex,
@@ -138,181 +271,47 @@ def operate_accounts():
         )
         path = insta485.app.config["UPLOAD_FOLDER"]/uuid_basename
         fileobj.save(path)
-
-        algorithm = 'sha512'
-        salt = uuid.uuid4().hex
-        hash_obj = hashlib.new(algorithm)
-        password_salted = salt + password
-        hash_obj.update(password_salted.encode('utf-8'))
-        password_hash = hash_obj.hexdigest()
-        password_db_string = "$".join([algorithm, salt, password_hash])
-        print(password_db_string)
-
         connection.execute(
-            "INSERT INTO users(username, fullname, email, filename, password)"
-            " VALUES (?, ?, ?, ?, ?)",
-            (username, fullname, email, uuid_basename, password_db_string)
+            "UPDATE users "
+            "SET filename=? "
+            "WHERE username=?",
+            [uuid_basename, logname]
         )
+    else:
+        pass
 
-        session["logname"] = username
-        if request.args.get("target") is None:
-            return redirect(url_for("show_index"))
-        else:
-            return redirect(request.args.get("target"))
+    connection.execute(
+        "UPDATE users "
+        "SET fullname=?, email=? "
+        "WHERE username=?",
+        [fullname, email, logname]
+    )
+
+
+@insta485.app.route('/accounts/', methods=["POST"])
+def operate_accounts():
+    operation = request.form['operation']
+    connection = insta485.model.get_db()
+    if operation == 'login':
+        login_operation(connection)
+
+    elif operation == "create":
+        create_operation(connection)
 
     elif operation == "delete":
-        logname = session.get('logname')
-        if logname is None:
-            return abort(403)
-
-        user_result = connection.execute(
-            "SELECT username, filename FROM users "
-            "WHERE username = ?", (logname,)
-        )
-        curr_user = user_result.fetchone()
-        ufilename = insta485.app.config["UPLOAD_FOLDER"]/curr_user["filename"]
-        with open(ufilename, 'r') as handle_ufile:
-            os.remove(ufilename)
-
-        user_post_result = connection.execute(
-            "SELECT owner, filename FROM posts "
-            "WHERE owner = ?", (logname,)
-        )
-        curr_posts = user_post_result.fetchall()
-        for curr_post in curr_posts:
-            pfilename = insta485.app.config["UPLOAD_FOLDER"] /\
-                curr_post["filename"]
-            with open(pfilename, 'r') as handle_pfile:
-                os.remove(pfilename)
-
-        connection.execute(
-            "DELETE FROM users WHERE username = ?", (logname,)
-        )
-
-        session.clear()
-        target_url = request.args.get("target")
-        if target_url:
-            return redirect(target_url)
-        else:
-            return redirect(url_for('show_index'))
+        delete_operation(connection)
 
     elif operation == "update_password":
-        # Check login
-        logname = session.get('logname')
-        if logname is None:
-            return abort(403)
-        # Get Data
-        password = request.form.get("password")
-        newpassword1 = request.form.get("new_password1")
-        newpassword2 = request.form.get("new_password2")
-        if not password or not newpassword1 or not newpassword2:
-            return abort(400)
-
-        # Query database
-        cur = connection.execute(
-            "SELECT password "
-            "FROM users "
-            "WHERE username=?",
-            [logname]
-        )
-
-        password_db = cur.fetchone()
-        if not password_db:
-            return abort(403)
-
-        # Check the password
-        (algorithm, salt,
-            password_hash_db) = password_db['password'].split('$')
-        hash_obj = hashlib.new(algorithm)
-        password_salted = salt + password
-        hash_obj.update(password_salted.encode('utf-8'))
-        password_hash = hash_obj.hexdigest()
-
-        if not password_hash == password_hash_db:
-            return abort(403)
-
-        # Update newpassword
-        if newpassword1 != newpassword2:
-            return abort(401)
-        algorithm = 'sha512'
-        salt = uuid.uuid4().hex
-        hash_obj = hashlib.new(algorithm)
-        password_salted = salt + newpassword1
-        hash_obj.update(password_salted.encode('utf-8'))
-        password_hash = hash_obj.hexdigest()
-        password_db_string = "$".join([algorithm, salt, password_hash])
-
-        # Update database
-        connection.execute(
-            "UPDATE users "
-            "SET password=? "
-            "WHERE username=?",
-            [password_db_string, logname]
-        )
-        target_url = request.args.get("target")
-        if target_url:
-            return redirect(target_url)
-        else:
-            return redirect(url_for('show_index'))
-
-        # Warning: Maybe need to redirect
+        update_password_operation(connection)
 
     elif operation == "edit_account":
-        # Check login
-        logname = session.get('logname')
-        if logname is None:
-            return abort(403)
-        # Get data
-        fullname = request.form.get("fullname")
-        email = request.form.get("email")
-        fileobj = request.files.get("file")
-
-        if not fullname or not email:
-            insta485.app.logger.debug("NO Warning!@!!!")
-            return abort(400)
-
-        if fileobj:
-            # delete the file
-            curl = connection.execute(
-                "SELECT filename "
-                "FROM users "
-                "WHERE username=?",
-                [logname]
-            )
-            curr_user = curl.fetchone()
-            ufilename = insta485.app.config["UPLOAD_FOLDER"] / \
-                curr_user["filename"]
-            insta485.app.logger.debug(str(ufilename))
-            with open(ufilename, 'r') as handle_ufile:
-                os.remove(ufilename)
-
-            # insert new file
-            filename = fileobj.filename
-            uuid_basename = "{stem}{suffix}".format(
-                stem=uuid.uuid4().hex,
-                suffix=pathlib.Path(filename).suffix
-            )
-            path = insta485.app.config["UPLOAD_FOLDER"]/uuid_basename
-            fileobj.save(path)
-            connection.execute(
-                "UPDATE users "
-                "SET filename=? "
-                "WHERE username=?",
-                [uuid_basename, logname]
-            )
-        else:
-            pass
-        connection.execute(
-            "UPDATE users "
-            "SET fullname=?, email=? "
-            "WHERE username=?",
-            [fullname, email, logname]
-        )
-        target_url = request.args.get("target")
-        if target_url:
-            return redirect(target_url)
-        else:
-            return redirect(url_for('show_index'))
+        edit_account_operation(connection)
 
     else:
-        return redirect(url_for('show_account_login'))
+        insta485.app.logger.error("This is very serious error!!!")
+
+    if request.args.get("target") is None:
+        return redirect(url_for("show_index"))
+    else:
+        return redirect(request.args.get("target"))
+

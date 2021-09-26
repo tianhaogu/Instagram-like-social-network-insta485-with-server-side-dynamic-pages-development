@@ -167,7 +167,7 @@ def test_postid_2(client):
     assert "comment" in buttons
 
     # Verify unexpected buttons are not present in the page
-    # assert "delete" not in buttons
+    assert "delete" not in buttons
     assert "like" not in buttons
     assert "follow" not in buttons
     assert "unfollow" not in buttons
