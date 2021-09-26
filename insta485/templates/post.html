@@ -26,44 +26,39 @@
       {% else %}
         <p>{{likes}} likes</p>
       {% endif %}
-      <p>
-        {% if is_logname_like %}
-          <!-- DO NOT CHANGE THIS (aside from where we say 'FIXME') -->
-          <form action="/likes/?target={{"/posts/" ~ postid ~ "/"}}" method="post" enctype="multipart/form-data">
-            <input type="hidden" name="operation" value="unlike"/>
-            <input type="hidden" name="postid" value="{{postid}}"/>
-            <input type="submit" name="unlike" value="unlike"/>
-          </form>
+      {% if is_logname_like %}
+        <!-- DO NOT CHANGE THIS (aside from where we say 'FIXME') -->
+        <form action="/likes/?target={{"/posts/" ~ postid ~ "/"}}" method="post" enctype="multipart/form-data">
+          <input type="hidden" name="operation" value="unlike"/>
+          <input type="hidden" name="postid" value="{{postid}}"/>
+          <input type="submit" name="unlike" value="unlike"/>
+        </form>
 
-        {% else %}
-          <!-- DO NOT CHANGE THIS (aside from where we say 'FIXME') -->
-          <form action="/likes/?target={{"/posts/" ~ postid ~ "/"}}" method="post" enctype="multipart/form-data">
-            <input type="hidden" name="operation" value="like"/>
-            <input type="hidden" name="postid" value="{{postid}}"/>
-            <input type="submit" name="like" value="like"/>
-          </form>
-        {% endif %}
-      </p>
+      {% else %}
+        <!-- DO NOT CHANGE THIS (aside from where we say 'FIXME') -->
+        <form action="/likes/?target={{"/posts/" ~ postid ~ "/"}}" method="post" enctype="multipart/form-data">
+          <input type="hidden" name="operation" value="like"/>
+          <input type="hidden" name="postid" value="{{postid}}"/>
+          <input type="submit" name="like" value="like"/>
+        </form>
+      {% endif %}
 
       {% for comment in comments %}
-        <p>
-          <span>
-            <a href="{{"/users/" ~ comment.owner ~ "/"}}">
-              <b>{{comment.owner}}</b>
-            </a>  
-          </span>
-          <span>{{comment.text}}</span>
-          {% if comment.owner == logname %}
-            <!-- DO NOT CHANGE THIS (aside from where we say 'FIXME') -->
-              <form action="/comments/?target={{url_for('show_post', postid_url_slug=postid)}}" method="post" enctype="multipart/form-data">
-                <input type="hidden" name="operation" value="delete"/>
-                <input type="hidden" name="commentid" value="{{comment.commentid}}"/>
-                <input type="submit" name="uncomment" value="delete"/>
-              </form>
-          {% endif %}
-        </p>  
+        <span>
+          <a href="{{"/users/" ~ comment.owner ~ "/"}}">
+            <b>{{comment.owner}}</b>
+          </a>  
+        </span>
+        <span>{{comment.text}}</span>
+        {% if comment.owner == logname %}
+          <!-- DO NOT CHANGE THIS (aside from where we say 'FIXME') -->
+            <form action="/comments/?target={{url_for('show_post', postid_url_slug=postid)}}" method="post" enctype="multipart/form-data">
+              <input type="hidden" name="operation" value="delete"/>
+              <input type="hidden" name="commentid" value="{{comment.commentid}}"/>
+              <input type="submit" name="uncomment" value="delete"/>
+            </form>
+        {% endif %} 
       {% endfor %}
-      <p>
         <!-- DO NOT CHANGE THIS (aside from where we say 'FIXME') -->
         <form action="/comments/?target={{"/posts/" ~ postid ~ "/"}}" method="post" enctype="multipart/form-data">
           <input type="hidden" name="operation" value="create"/>
@@ -71,16 +66,13 @@
           <input type="text" name="text" required/>
           <input type="submit" name="comment" value="comment"/>
         </form>
-      </p>
       {% if logname == owner %}
-      <p>
         <!-- DO NOT CHANGE THIS (aside from where we say 'FIXME') -->
         <form action="/posts/?target={{url_for('show_user', user_url_slug=logname)}}" method="post" enctype="multipart/form-data">
           <input type="hidden" name="operation" value="delete"/>
           <input type="hidden" name="postid" value="{{postid}}"/>
           <input type="submit" name="delete" value="delete this post"/>
         </form>
-      </p>
       {% endif %}
   </div>
   </div>
