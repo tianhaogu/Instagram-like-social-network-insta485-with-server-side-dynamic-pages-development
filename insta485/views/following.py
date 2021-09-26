@@ -4,11 +4,9 @@ Insta485 following view.
 URLs include:
 /
 """
-import arrow
-import insta485
-import functools
-from flask import (flash, redirect, render_template,
+from flask import (redirect, render_template,
                    request, session, url_for, abort)
+import insta485
 
 
 @insta485.app.route('/users/<user_url_slug>/following/')
@@ -73,6 +71,7 @@ def show_following(user_url_slug):
 
 @insta485.app.route('/following/', methods=["POST"])
 def operate_following():
+    """Post Operate Following."""
     operation = request.form['operation']
     username = request.form['username']
     logname = session['logname']
@@ -109,5 +108,4 @@ def operate_following():
     target_url = request.args.get("target")
     if target_url:
         return redirect(target_url)
-    else:
-        return redirect(url_for('show_index'))
+    return redirect(url_for('show_index'))

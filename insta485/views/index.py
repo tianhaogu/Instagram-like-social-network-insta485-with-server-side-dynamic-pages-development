@@ -5,11 +5,9 @@ URLs include:
 /
 """
 import flask
+from flask import (redirect, session, url_for)
 import arrow
 import insta485
-import functools
-from flask import (flash, redirect, render_template,
-                   request, session, url_for)
 
 
 @insta485.app.route('/')

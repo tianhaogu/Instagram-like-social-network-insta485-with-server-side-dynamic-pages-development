@@ -4,14 +4,14 @@ Insta485 user view.
 URLs include:
 /
 """
-import flask
+from flask import (redirect, render_template,
+                   session, url_for, abort)
 import insta485
-from flask import (flash, redirect, render_template,
-                   request, session, url_for, abort)
 
 
 @insta485.app.route('/users/<user_url_slug>/', methods=["GET"])
 def show_user(user_url_slug):
+    """Show User."""
     logname = session.get('logname')
     if not logname:
         return redirect(url_for('show_account_login'))

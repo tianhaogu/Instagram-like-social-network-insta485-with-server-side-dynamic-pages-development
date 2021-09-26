@@ -8,9 +8,9 @@ import pathlib
 import os
 import uuid
 import hashlib
-import insta485
-from flask import (flash, redirect, render_template,
+from flask import (redirect, render_template,
                    request, session, url_for, abort)
+import insta485
 
 
 @insta485.app.route('/accounts/login/', methods=["GET"])
@@ -19,8 +19,7 @@ def show_account_login():
     logname = session.get("logname", "notloggedin")
     if logname == "notloggedin" or logname is None:
         return render_template("login.html")
-    else:
-        return redirect(url_for("show_index"))
+    return redirect(url_for("show_index"))
 
 
 @insta485.app.route('/accounts/logout/', methods=["POST"])
@@ -88,7 +87,7 @@ def login_operation(connection):
     logname = request.form['username']
     password = request.form['password']
     if not logname or not password:
-        abort(400)
+        return abort(400)
 
     cur = connection.execute(
         "SELECT password "
@@ -122,14 +121,14 @@ def create_operation(connection):
     fileobj = request.files.get("file")
     if (username is None or password is None or fullname is None
             or email is None or fileobj is None):
-        flask.abort(400)
+        return abort(400)
 
     user_search = connection.execute(
         "SELECT username FROM users "
         "WHERE username = ?", (username,)
     )
     if user_search.fetchone() is not None:
-        flask.abort(409)
+        return abort(409)
 
     filename = fileobj.filename
     uuid_basename = "{stem}{suffix}".format(
@@ -168,8 +167,7 @@ def delete_operation(connection):
     )
     curr_user = user_result.fetchone()
     ufilename = insta485.app.config["UPLOAD_FOLDER"]/curr_user["filename"]
-    with open(ufilename, 'r') as handle_ufile:
-        os.remove(ufilename)
+    os.remove(ufilename)
 
     user_post_result = connection.execute(
         "SELECT owner, filename FROM posts "
@@ -179,8 +177,7 @@ def delete_operation(connection):
     for curr_post in curr_posts:
         pfilename = insta485.app.config["UPLOAD_FOLDER"] /\
             curr_post["filename"]
-        with open(pfilename, 'r') as handle_pfile:
-            os.remove(pfilename)
+        os.remove(pfilename)
 
     connection.execute(
         "DELETE FROM users WHERE username = ?", (logname,)
@@ -269,8 +266,7 @@ def edit_account_operation(connection):
         ufilename = insta485.app.config["UPLOAD_FOLDER"] / \
             curr_user["filename"]
         insta485.app.logger.debug(str(ufilename))
-        with open(ufilename, 'r') as handle_ufile:
-            os.remove(ufilename)
+        os.remove(ufilename)
 
         # insert new file
         filename = fileobj.filename
@@ -322,5 +318,4 @@ def operate_accounts():
 
     if request.args.get("target") is None:
         return redirect(url_for("show_index"))
-    else:
-        return redirect(request.args.get("target"))
+    return redirect(request.args.get("target"))

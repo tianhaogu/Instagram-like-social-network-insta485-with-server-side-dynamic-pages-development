@@ -1,10 +1,11 @@
+"""Insta485 Download File."""
+from flask import (session, abort, send_from_directory)
 import insta485
-from flask import (flash, redirect, render_template,
-                   request, session, url_for, abort, send_from_directory)
 
 
 @insta485.app.route("/uploads/<path:name>")
 def download_file(name):
+    """Get Download File."""
     logname = session.get('logname')
     if not logname:
         abort(403)

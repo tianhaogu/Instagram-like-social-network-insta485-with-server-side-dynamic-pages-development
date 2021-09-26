@@ -4,15 +4,13 @@ Insta485 explore view.
 URLs include:
 /users/<user_url_slug>/
 """
+from flask import (redirect, render_template, session, url_for)
 import insta485
-import uuid
-import hashlib
-from flask import (flash, redirect, render_template,
-                   request, session, url_for, abort)
 
 
 @insta485.app.route('/explore/', methods=["GET"])
 def show_explore():
+    """Get Show Explore."""
     # Session Control
     logname = session.get('logname')
     if not logname:

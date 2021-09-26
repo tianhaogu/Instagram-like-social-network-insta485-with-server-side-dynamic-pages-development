@@ -5,13 +5,13 @@ URLs include:
 /
 """
 import flask
+from flask import request
 import insta485
-from flask import (flash, redirect, render_template,
-                   request, session, url_for)
 
 
 @insta485.app.route('/likes/', methods=["POST"])
 def operate_like():
+    """Post Operate Like."""
     logname = flask.session["logname"]
     operation_value = request.form["operation"]
     postid_value = request.form["postid"]
@@ -43,12 +43,12 @@ def operate_like():
     #        or request.args["target"] is None):
     if request.args.get('target') is None:
         return flask.redirect(flask.url_for('show_index'))
-    else:
-        return flask.redirect(request.args.get("target"))
+    return flask.redirect(request.args.get("target"))
 
 
 @insta485.app.route('/comments/', methods=["POST"])
 def operate_comment():
+    """Post Operate Comment."""
     logname = flask.session["logname"]
     operation_value = request.form["operation"]
     postid_value = request.form.get("postid", "no_postid")
@@ -62,7 +62,7 @@ def operate_comment():
     curr_comment = comment_result.fetchone()
 
     if operation_value == "create":
-        if text_value == '' or text_value == "no_text":
+        if text_value in ('', 'no_text'):
             flask.abort(400)
         connection.execute(
             "INSERT INTO comments(owner, postid, text) VALUES "
@@ -81,5 +81,4 @@ def operate_comment():
     #        or request.args["target"] is None):
     if request.args.get('target') is None:
         return flask.redirect(flask.url_for('show_index'))
-    else:
-        return flask.redirect(request.args.get("target"))
+    return flask.redirect(request.args.get("target"))

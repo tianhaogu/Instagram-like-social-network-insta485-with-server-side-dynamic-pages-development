@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="04990b63-1ec0-4a31-a067-31b23aec716d" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/insta485/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/insta485/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/insta485/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/insta485/config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/insta485/views/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/insta485/views/__init__.py" afterDir="false" />
+    <list default="true" id="04990b63-1ec0-4a31-a067-31b23aec716d" name="Default Changelist" comment="Fixed pycodestyle">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/insta485/views/accounts.py" beforeDir="false" afterPath="$PROJECT_DIR$/insta485/views/accounts.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/insta485/views/download_file.py" beforeDir="false" afterPath="$PROJECT_DIR$/insta485/views/download_file.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/insta485/views/explore.py" beforeDir="false" afterPath="$PROJECT_DIR$/insta485/views/explore.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/insta485/views/followers.py" beforeDir="false" afterPath="$PROJECT_DIR$/insta485/views/followers.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/insta485/views/following.py" beforeDir="false" afterPath="$PROJECT_DIR$/insta485/views/following.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/insta485/views/index.py" beforeDir="false" afterPath="$PROJECT_DIR$/insta485/views/index.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/insta485/views/likecomment.py" beforeDir="false" afterPath="$PROJECT_DIR$/insta485/views/likecomment.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/insta485/views/posts.py" beforeDir="false" afterPath="$PROJECT_DIR$/insta485/views/posts.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/insta485/views/user.py" beforeDir="false" afterPath="$PROJECT_DIR$/insta485/views/user.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -67,10 +69,23 @@
       <updated>1632618838904</updated>
       <workItem from="1632618840537" duration="1461000" />
       <workItem from="1632628252992" duration="1952000" />
+      <workItem from="1632658480544" duration="3641000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
 </project>

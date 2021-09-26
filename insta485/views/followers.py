@@ -4,10 +4,8 @@ Insta485 followers view.
 URLs include:
 /
 """
-
+from flask import (render_template, redirect, session, url_for, abort)
 import insta485
-from flask import (flash, redirect, render_template, send_from_directory,
-                   request, session, url_for, abort)
 
 
 @insta485.app.route('/users/<user_url_slug>/followers/', methods=["GET"])

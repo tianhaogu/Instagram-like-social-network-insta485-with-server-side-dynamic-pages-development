@@ -4,18 +4,18 @@ Insta485 posts view.
 URLs include:
 /
 """
-import flask
 import pathlib
 import os
-import arrow
 import uuid
+import flask
+from flask import (request, url_for)
+import arrow
 import insta485
-from flask import (flash, redirect, render_template,
-                   request, session, url_for)
 
 
 @insta485.app.route('/posts/<postid_url_slug>/', methods=["GET"])
 def show_post(postid_url_slug):
+    """Get Show Post."""
     logname = flask.session.get("logname", "notloggedin")
     if logname == "notloggedin" or logname is None:
         return flask.redirect(url_for("show_account_login"))
@@ -70,6 +70,7 @@ def show_post(postid_url_slug):
 
 @insta485.app.route('/posts/', methods=["POST"])
 def operate_post():
+    """Post Operate Post."""
     logname = flask.session["logname"]
     operation_value = request.form["operation"]
     connection = insta485.model.get_db()
@@ -84,8 +85,7 @@ def operate_post():
         curr_post = post_result.fetchone()
 
         path = insta485.app.config["UPLOAD_FOLDER"]/curr_post["filename"]
-        with open(path, 'r') as handle_file:
-            os.remove(path)
+        os.remove(path)
 
         if curr_post["owner"] != logname:
             flask.abort(403)
@@ -116,5 +116,4 @@ def operate_post():
             or request.args.get("target") is None):
         return flask.redirect(flask.url_for('show_user',
                                             user_url_slug=logname))
-    else:
-        return flask.redirect(request.args.get("target"))
+    return flask.redirect(request.args.get("target"))
