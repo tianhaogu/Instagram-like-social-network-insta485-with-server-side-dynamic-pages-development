@@ -314,7 +314,5 @@ def operate_accounts():
         else:
             return redirect(url_for('show_index'))
 
-        #
-
     else:
         return redirect(url_for('show_account_login'))
