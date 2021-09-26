@@ -78,8 +78,9 @@ def show_account_password():
     logname = session.get("logname", "notloggedin")
     if logname == "notloggedin" or logname is None:
         return redirect(url_for("show_account_login"))
-    text = {'logname':logname}
-    return render_template("password.html", **text)
+
+    user_context = {"logname": logname}
+    return render_template("password.html", **user_context)
 
 
 def login_operation(connection):

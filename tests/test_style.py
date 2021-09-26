@@ -135,13 +135,17 @@ def crawl(client, outputdir, todo, done):
 
     # Ignore logout route
     print("GET", path, "FROM", url_pair.source)
+    print("PATHPATHPATHPATHPATHPATHPATHPATHPATHPATHPATHPATHPATHPATHPATHPATHPATHPATHPATHPATH:  ", path)
+    print("TYPETYPETYPETYPETYPETYPETYPETYPETYPETYPETYPETYPETYPETYPETYPETYPETYPETYPE:   ", type(path))
+    print('\n')
     if "logout" in path:
+        print("This is: ", path)
         done.add(path)
         crawl(client, outputdir, todo, done)
         return
 
     # Download
-    print("GET", path, "FROM", url_pair.source)
+    # print("GET", path, "FROM", url_pair.source)
     response = client.get(path)
 
     # redirect routes should return 302 status
