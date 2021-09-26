@@ -123,6 +123,8 @@ def create_operation(connection):
     if (username is None or password is None or fullname is None
             or email is None or fileobj is None):
         abort(400)
+    if fileobj.filename == '':
+        abort(400)
 
     user_search = connection.execute(
         "SELECT username FROM users "
@@ -255,7 +257,7 @@ def edit_account_operation(connection):
         # insta485.app.logger.debug("NO Warning!@!!!")
         abort(400)
 
-    if fileobj:
+    if fileobj is not None and fileobj.filename != '':
         # delete the file
         curl = connection.execute(
             "SELECT filename "

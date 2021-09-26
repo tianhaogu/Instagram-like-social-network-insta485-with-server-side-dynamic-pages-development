@@ -94,10 +94,10 @@ def operate_post():
         )
     elif operation_value == "create":
         fileobj = flask.request.files["file"]
-        if fileobj is None:
+        if fileobj is None or fileobj.filename == '':
             flask.abort(400)
-        filename = fileobj.filename
 
+        filename = fileobj.filename
         uuid_basename = "{stem}{suffix}".format(
             stem=uuid.uuid4().hex,
             suffix=pathlib.Path(filename).suffix
