@@ -30,7 +30,7 @@ def show_index():
     # Query all the posts from database
     cur = connection.execute(
         "SELECT postid, filename, owner, created "
-        "FROM posts "
+        "FROM posts ORDER BY postid DESC"
     )
     users = cur.fetchall()
     # Query all the following users and logname itself
