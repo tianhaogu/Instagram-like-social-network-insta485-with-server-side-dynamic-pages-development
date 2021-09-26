@@ -145,6 +145,8 @@ def crawl(client, outputdir, todo, done):
 
     # redirect routes should return 302 status
     redirect_routes = ["/accounts/create/"]
+    if response.status_code == 404:
+        print("I am here:" + path)
     if path in redirect_routes:
         assert response.status_code == 302
     else:

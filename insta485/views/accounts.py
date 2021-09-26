@@ -65,8 +65,9 @@ def show_account_edit():
         "FROM users WHERE username = ?", (logname,)
     )
     curr_user = user_result.fetchone()
+    curr_user['filename'] = '/uploads/' + curr_user['filename']
 
-    users_context = {"curr_user": curr_user}
+    users_context = {"logname":logname, "curr_user": curr_user}
     return render_template("edit.html", **users_context)
 
 
@@ -77,6 +78,7 @@ def show_account_password():
         return redirect(url_for("show_account_login"))
 
     return render_template("password.html")
+
 
 
 def login_operation(connection):

@@ -2,6 +2,10 @@
 {% block content %}
 <!-- DO NOT CHANGE THIS (aside from where we say 'FIXME') -->
 <div style="margin-left:15%;margin-right:15%">
+  <a>
+    <span><img src="{{curr_user.filename}}" width="30" height="30" alt="userPhoto"></span>
+    <span>{{logname}}</span>
+  </a>
   <form action="/accounts/?target={{url_for('show_user', user_url_slug=curr_user.username)}}" method="post" enctype="multipart/form-data">
     <P>Photo <input type="file" name="file" accept="image/*"/></P>
     <P>Name <input type="text" name="fullname" value="{{curr_user.fullname}}" required/></P>
