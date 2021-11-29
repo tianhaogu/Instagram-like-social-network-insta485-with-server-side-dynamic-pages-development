@@ -1,0 +1,21 @@
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying 18.191.88.233:80...
+* TCP_NODELAY set
+* Connected to ec2-18-191-88-233.us-east-2.compute.amazonaws.com (18.191.88.233) port 80 (#0)
+> GET /accounts/login/ HTTP/1.1
+> Host: ec2-18-191-88-233.us-east-2.compute.amazonaws.com
+> User-Agent: curl/7.68.0
+> Accept: */*
+> 
+* Mark bundle as not supporting multiuse
+< HTTP/1.1 200 OK
+< Server: nginx/1.18.0 (Ubuntu)
+< Date: Sun, 26 Sep 2021 21:49:25 GMT
+< Content-Type: text/html; charset=utf-8
+< Content-Length: 1486
+< Connection: keep-alive
+< 
+{ [1486 bytes data]
+100  1486  100  1486    0     0  11888      0 --:--:-- --:--:-- --:--:-- 11888
+* Connection #0 to host ec2-18-191-88-233.us-east-2.compute.amazonaws.com left intact

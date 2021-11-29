@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+
+
+<html lang="en">
+<head>
+  <title>insta485</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+
+  <div class="title">
+    <a href="/">
+      <div>
+        <div style="display: inline-block;vertical-align: middle;">
+          <img src="/static/images/insta.jpg" width="50" height="50" alt="insta">
+        </div>
+        <hr style="display: inline-block;vertical-align: middle; width:0.1px; height:30px;border-left: 10px;border-right: 10px; ">
+        <b style="display: inline-block;vertical-align: middle;font-family: cursive;font-size: 30px;">Insta485</b>
+      </div>
+    </a>
+    <div style="margin-top: 25px;">
+      <span>
+        <div style="margin-top: 25px;">
+          <span>
+            <a href="/accounts/login/">
+              <b >login</b>
+            </a>
+          </span>
+        </div>
+      </span>
+    </div>
+  </div>
+  <br>
+  <br>
+  <br>
+  <div class="userWithoutDiv">
+    
+<!-- DO NOT CHANGE THIS (aside from styling) -->
+<form action="/accounts/?target=/" method="post" enctype="multipart/form-data">
+  <p>Enter your account and passord</p>
+  <p><input type="text" name="username" required/></p>
+  <p><input type="password" name="password" required/></p>
+  <p><input type="submit" value="login"/></p>
+  <input type="hidden" name="operation" value="login"/>
+</form>
+<p>
+  <span>Don't have an account?</span>
+  <span>
+    <a href="/accounts/create/">
+      <b>Sign up</b>
+    </a>
+  </span>
+</p>
+
+  </div>
+</body>
+</html>
